@@ -3,7 +3,7 @@
 use super::AppState;
 use gpui::App;
 use openlogi_core::config::{
-    AppIcon, AppSettings, Appearance, AssetSourcePreference, ThumbwheelSensitivity,
+    AppIcon, AppSettings, Appearance, AssetSourcePreference, DeviceViewMode, ThumbwheelSensitivity,
 };
 
 impl AppState {
@@ -115,6 +115,14 @@ impl AppState {
         }
         self.config.app_settings.ui_radius = radius;
         self.persist_config("UI radius setting");
+    }
+    /// Persist the Home device-gallery layout. No-op when unchanged.
+    pub fn set_device_view_mode(&mut self, mode: DeviceViewMode) {
+        if self.config.app_settings.device_view_mode == mode {
+            return;
+        }
+        self.config.app_settings.device_view_mode = mode;
+        self.persist_config("device view mode");
     }
     /// Whether OpenLogi manages `key` (capture + volatile re-apply).
     #[must_use]

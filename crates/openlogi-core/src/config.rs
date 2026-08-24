@@ -30,9 +30,9 @@ use file::{backup_existing_config, config_backup_path};
 pub use key_trigger::{KeyModifiers, KeyTrigger, KeyboardConfig, ParseTriggerError};
 pub use settings::LightSettings;
 pub use settings::{
-    AppIcon, AppSettings, Appearance, AssetSourcePreference, CameraControls, Lighting,
-    SMARTSHIFT_AUTO_DISENGAGE_DEFAULT, SMARTSHIFT_MIN_AUTO_DISENGAGE, ScrollResolution, SmartShift,
-    ThumbwheelSensitivity, WheelMode,
+    AppIcon, AppSettings, Appearance, AssetSourcePreference, CameraControls, DeviceViewMode,
+    Lighting, SMARTSHIFT_AUTO_DISENGAGE_DEFAULT, SMARTSHIFT_MIN_AUTO_DISENGAGE, ScrollResolution,
+    SmartShift, ThumbwheelSensitivity, WheelMode,
 };
 
 use crate::binding::{
@@ -46,8 +46,9 @@ use settings::GestureOwner;
 /// persisted shape or enum vocabulary changes; readers inspect this value
 /// before consuming the rest of the file.
 ///
-/// v5 adds an optional per-device custom name. No migration is needed because
-/// the absent field means "use the model name".
+/// v5 adds an optional per-device custom name and the Home gallery view
+/// preference. No migration is needed because absent fields use the model name
+/// and responsive grid respectively.
 ///
 /// v4 removes the one-gesture-button-per-device owner lock: gesture mode is a
 /// per-button fact read from the binding shape, so `gesture_owner` no longer

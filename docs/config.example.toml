@@ -13,6 +13,7 @@ asset_source = "automatic"
 language = "en"
 thumbwheel_sensitivity = 14
 appearance = "system"
+device_view_mode = "grid"
 # macOS only: "openlogi" (the signed icon) or "prism".
 app_icon = "openlogi"
 

@@ -28,6 +28,22 @@ pub enum Appearance {
     Dark,
 }
 
+/// Layout used for the Home device gallery.
+///
+/// This is a presentation preference: the GUI owns how each mode renders, while
+/// core keeps the persisted vocabulary platform-free alongside [`Appearance`].
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum DeviceViewMode {
+    /// Responsive cards that wrap to keep the finite device set visible.
+    #[default]
+    Grid,
+    /// Compact full-width rows for scanning identity and status.
+    List,
+    /// A horizontally scrolling row navigated with previous/next controls.
+    Carousel,
+}
+
 /// Which icon the app wears.
 ///
 /// Variant names are one string doing three jobs, and all three are part of a
@@ -181,6 +197,9 @@ pub struct AppSettings {
     /// Light/dark appearance preference. Defaults to following the OS.
     #[serde(default)]
     pub appearance: Appearance,
+    /// Layout used for the Home device gallery. Defaults to the responsive grid.
+    #[serde(default)]
+    pub device_view_mode: DeviceViewMode,
     /// Name of the theme used in light mode (a [`crate`]-agnostic string
     /// matching a gpui-component theme, e.g. `"OpenLogi Light"`). `None` uses
     /// the OpenLogi brand light theme.
@@ -307,6 +326,7 @@ impl Default for AppSettings {
             language: None,
             thumbwheel_sensitivity: ThumbwheelSensitivity::DEFAULT,
             appearance: Appearance::System,
+            device_view_mode: DeviceViewMode::Grid,
             app_icon: AppIcon::Openlogi,
             theme_light: None,
             theme_dark: None,
