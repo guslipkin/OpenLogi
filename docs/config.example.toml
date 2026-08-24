@@ -1,5 +1,5 @@
 # OpenLogi configuration example. Copy only the sections you need.
-schema_version = 4
+schema_version = 5
 selected_device = "receiver:aabbccdd:slot:1"
 
 [app_settings]
@@ -17,6 +17,7 @@ appearance = "system"
 app_icon = "openlogi"
 
 [devices."receiver:aabbccdd:slot:1"]
+custom_name = "Office mouse"
 dpi = 1600
 dpi_presets = [800, 1600, 3200]
 thumbwheel_sensitivity = 20

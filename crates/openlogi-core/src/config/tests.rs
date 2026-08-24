@@ -467,7 +467,7 @@ fn human_readable_toml_layout() {
     // The key only contains [A-Za-z0-9_], so TOML emits it as a bare-word
     // table key (no surrounding quotes). The test asserts the observable
     // structure rather than locking in a specific quoting.
-    assert!(body.contains("schema_version = 4"), "got: {body}");
+    assert!(body.contains("schema_version = 5"), "got: {body}");
     assert!(body.contains("[devices.2b042.bindings]"), "got: {body}");
     // A `Single` binding serializes byte-identically to the pre-v2 bare
     // `Action`, so the leaf line is unchanged.
@@ -551,6 +551,40 @@ fn device_identity_roundtrips_and_is_iterable() {
     assert_eq!(
         parsed.known_identities().collect::<Vec<_>>(),
         vec![("2b034", &mouse)]
+    );
+}
+
+#[test]
+fn custom_device_name_roundtrips_without_changing_model_identity() {
+    use crate::device::{Capabilities, DeviceKind};
+
+    let mut config = Config::default();
+    config.set_device_identity(
+        "receiver:test:slot:1",
+        DeviceIdentity {
+            display_name: "MX Master 4".into(),
+            model_info: None,
+            codename: None,
+            kind: DeviceKind::Mouse,
+            capabilities: Capabilities::default(),
+            light_capabilities: None,
+            driver_id: None,
+            registry_model_id: None,
+        },
+    );
+    config.set_device_custom_name("receiver:test:slot:1", Some("Office".into()));
+
+    let parsed = write_and_read(&config);
+
+    assert_eq!(
+        parsed.device_custom_name("receiver:test:slot:1"),
+        Some("Office")
+    );
+    assert_eq!(
+        parsed
+            .device_identity("receiver:test:slot:1")
+            .map(|identity| identity.display_name.as_str()),
+        Some("MX Master 4")
     );
 }
 
@@ -873,7 +907,7 @@ Click = \"Paste\"
     // Saving self-heals to the current shape: stamped version + merged table,
     // legacy field names gone.
     let body = toml::to_string_pretty(&cfg).expect("serialize");
-    assert!(body.contains("schema_version = 4"), "got: {body}");
+    assert!(body.contains("schema_version = 5"), "got: {body}");
     assert!(body.contains("[devices.2b042.bindings]"), "got: {body}");
     assert!(!body.contains("button_bindings"), "got: {body}");
     assert!(!body.contains("gesture_bindings"), "got: {body}");
@@ -1355,7 +1389,7 @@ fn migration_materializes_a_hidpp_owners_missing_map() {
     // A v3 HID++ owner dispatched the seeded default direction map
     // regardless of its stored shape (the runtime seeded at projection
     // time), so an owner with no stored map must not lose gestures when
-    // the file is rewritten to v4.
+    // the file is rewritten to the current schema.
     let toml = "\
 schema_version = 3
 
